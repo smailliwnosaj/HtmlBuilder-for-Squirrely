@@ -1,0 +1,33 @@
+<html>
+  <head>
+    <script src="htmlbuilder.js"/>
+    <script type="text/javascript">
+      var viewmodel = {
+        {id:"textbox1",value:"Text Box 1",onchange:"textbox_onchange(this)",template:"textbox_template"},
+        {id:"textbox2",value:"Text Box 2",onchange:"textbox_onchange(this)",template:"textbox_template"},
+        {id:"textbox3",value:"Text Box 3",onchange:"textbox_onchange(this)",template:"textbox_template"}
+      };
+      
+      htmlbuilder.append("#container", viewmodel);
+      
+      function textbox_onchange(element) {
+        alert(element.value);
+      }
+    </script>
+  </head>
+  <body>
+    
+    <!-- This is a Squirrely Template for a -->
+    <template id="textbox_template" style="display:none">
+      <div class="form_row">
+        <div class="form_label_left"><label for="#: id #">#: label_text #</label></div>
+        <div class="form_value_right">
+            <input class="form-control form_textbox" name="#: id #" id="#: id #" type="text" value="#: value #" onchange="#: onchange #" />
+        </div>
+      </div>
+    </template>
+    
+    <div id="container"></div>
+    
+  </body>
+</html>
