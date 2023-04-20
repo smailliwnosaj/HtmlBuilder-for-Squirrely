@@ -1,33 +1,69 @@
 <html>
   <head>
-    <script src="htmlbuilder.js"/>
+    <script src="htmlbuilder.js"></script>
     <script type="text/javascript">
-      var viewmodel = {
-        {id:"textbox1",value:"Text Box 1",onchange:"textbox_onchange(this)",template:"textbox_template"},
-        {id:"textbox2",value:"Text Box 2",onchange:"textbox_onchange(this)",template:"textbox_template"},
-        {id:"textbox3",value:"Text Box 3",onchange:"textbox_onchange(this)",template:"textbox_template"}
-      };
-      
-      htmlbuilder.append("#container", viewmodel);
-      
+      var viewmodel = [
+        {label_text:"Form Field 1",id:"textbox1",value:"Text Box 1",onchange:"textbox_onchange(this)",template:"textbox_template"},
+        {label_text:"Form Field 2",id:"textbox2",value:"Text Box 2",onchange:"textbox_onchange(this)",template:"textbox_template"},
+        {label_text:"Button 1",id:"button1",onclick:"button_onclick(this)",template:"button_template"}
+      ];
+	  
       function textbox_onchange(element) {
-        alert(element.value);
-      }
+		console.log("textbox_onchange(" + element.id + ")");
+        for (var i=0; i < viewmodel.length; i++) {
+			if (element.id == viewmodel[i].id) {
+				console.log("viewmodel object with index " + i + " had its value property changed from '" + viewmodel[i].value + "' to '" + element.value + "'.");
+				viewmodel[i].value = element.value; 
+				console.log(viewmodel[i]);
+			}
+		}
+      };
+	  
+	  function button_onclick(element) {
+		console.log("button_onclick(" + element.id + ")");
+		for (var i=0; i < viewmodel.length; i++) {
+			if (element.id == viewmodel[i].id) {
+				console.log("viewmodel object with index " + i + " was clicked.  A string '--clicked' was appened to the label_text property of the object in the viewmodel.  The DOM object was updated with the latest state of the object in the JSON viewmodel.");
+				viewmodel[i].label_text = viewmodel[i].label_text + " -clicked";
+				console.log(viewmodel[i]);
+				htmlBuilder.update(element, viewmodel[i]);
+			}
+		}
+	  };
+	  
+	  window.onload = function WindowLoad(event) {
+		//console.log(viewmodel);
+        htmlBuilder.append("container", viewmodel);
+	  };
     </script>
+	
+	<style type="text/css">
+		.form_label_left {width: 120px;display:inline-block;}
+		.form_value_right {width: 120px;display:inline-block;}
+	</style>
   </head>
   <body>
     
     <!-- This is a Squirrely Template for a -->
     <template id="textbox_template" style="display:none">
       <div class="form_row">
-        <div class="form_label_left"><label for="#: id #">#: label_text #</label></div>
+        <div class="form_label_left"><label for="{{id}}">{{label_text}}</label></div>
         <div class="form_value_right">
-            <input class="form-control form_textbox" name="#: id #" id="#: id #" type="text" value="#: value #" onchange="#: onchange #" />
+            <input class="form-control form_textbox" name="{{id}}" id="{{id}}" type="text" value="{{value}}" onchange="{{onchange}}" />
         </div>
       </div>
     </template>
+	
+	<template id="button_template" style="display:none">
+		<div style="text-align:center;display:inline-block;">
+			<button class="btn btn-default button button_primary" name="{{id}}" id="{{id}}" href="javascript:void(0)" onclick="{{onclick}}" style="padding: 4px 8px;font-weight: bold;">{{label_text}}</button>
+		</div>
+	</template>
     
     <div id="container"></div>
+	
+	<div>Change values in the text boxes and watch in the browser developer console as the json viewmodel is updated after each change.</div>
     
   </body>
 </html>
+
